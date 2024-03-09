@@ -4,20 +4,21 @@
 \alias{transferBootstrap}
 \title{Transfer Bootstrap}
 \usage{
-transferBootstrap(tree, trees, phylo = TRUE, scale = TRUE)
+transferBootstrap(tree, BStrees)
 }
 \arguments{
 \item{tree}{The tree on which edges the bootstrap values are plotted.}
 
-\item{trees}{a list of trees (object of class "multiPhylo").}
-
-\item{phylo}{Logical, return a phylogentic tree with support value or a
-vector of bootstrap values.}
-
-\item{scale}{scale the values.}
+\item{BStrees}{a list of trees (object of class "multiPhylo").}
+}
+\value{
+\code{plotBS} returns silently a tree, i.e. an object of class
+\code{phylo} with the bootstrap values as node labels. The argument
+\code{BSTrees} is optional and if not supplied the labels supplied
+in the \code{node.label} slot will be used.
 }
 \description{
-\code{transferBootstrap} assigns transfer bootstrap (Lemoine et al. 2018)
+\code{transferBootstrap} assignes transfer bootstrap (Lemoine et al. 2018)
 values to the (internal) edges.
 }
 \examples{
@@ -40,8 +41,7 @@ phylogenetic bootstrap in the era of big data. \emph{Nature},
 \bold{556(7702)}, 452--456.
 }
 \seealso{
-\code{\link{plotBS}}, \code{\link{maxCladeCred}},
-\code{\link{drawSupportOnEdges}}
+\code{\link{plotBS}}, \code{\link{maxCladeCred}}
 }
 \author{
 Klaus Schliep \email{klaus.schliep@gmail.com}

@@ -5,11 +5,10 @@
 \title{Assign and compute edge lengths from a sample of trees}
 \usage{
 add_edge_length(tree, trees, fun = function(x) median(na.omit(x)),
-  rooted = all(is.rooted(trees)))
+  rooted = TRUE)
 }
 \arguments{
-\item{tree}{a phylogenetic tree or splitnetwork where edge lengths are
-assigned to.}
+\item{tree}{tree where edge lengths are assigned to.}
 
 \item{trees}{an object of class multiPhylo, where the average for the edges
 is computed from.}
@@ -32,11 +31,11 @@ bs <- bootstrap.phyDat(Laurasiatherian,
 tree_compat <- allCompat(bs, rooted=TRUE) |>
               add_edge_length(bs)
 plot(tree_compat)
-add_boxplot(tree_compat, bs, boxwex=.7)
+add_boxplot(tree_compat, bs)
 }
 \seealso{
 \code{\link{node.depth.edgelength}}, \code{\link{consensus}},
-\code{\link{maxCladeCred}}, \code{\link{add_boxplot}}
+\code{\link{maxCladeCred}}
 }
 \author{
 Klaus Schliep

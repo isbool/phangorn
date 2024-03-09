@@ -1,40 +1,3 @@
-    CHANGES in PHANGORN VERSION 2.12.0
-
-OTHER CHANGES
-
-    o pml.control got an argument statefreq, which controls if "empirical"
-
-      or (ML) "estimated" state/base frequencies are used/computed. The change
-
-      of the default to "empirical" speeds up functions modelTest and
-
-      pml_bb/optim.pml. However estimates will differ to previous versions,
-
-      which were implicitly using "estimated".
-
-    o pml_bb roots the tree, if method is either ultrametric or tipdated. Fixes
-
-      problem when modelTest object was supplied.
-
-    o some improvements to pmlPart.
-
-    o nicer defaults for plot.pml, mainly for rooted trees.
-
-    o plot.networx gets two additional arguments direction and angle.
-
-    o the sankoff algorithm has been rewritten.
-
-    o functions Descendants, Ancestors, Siblings, mrca.phy now also accept a
-
-      character vector for the node argument.
-
-    o plotAnc got an argument scheme allowing to use different color schemes.
-
-      Some default values changed to produce nicer plots are nicer out of the
-
-      box.
-
-
     CHANGES in PHANGORN VERSION 2.11.0
 
 OTHER CHANGES
@@ -53,7 +16,7 @@ BUG FIXES
 
     o densiTree does not draw an empty plot any more
 
-    o Replace rgl.texts with texts3d, pull request by Duncan Murdoch (thanks)
+    o Replace rgl.texts with texts3d, oull reqiest by Duncan Murdoch (thanks)
 
     o changes in read.nexus.splits and read.nexus.networx to work with the
 

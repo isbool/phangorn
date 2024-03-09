@@ -1,22 +1,19 @@
 edge_length_matrix <- function(tree, trees, rooted=TRUE){
-  if(!inherits(trees, "multiPhylo")) stop("trees must be of class multiPhylo")
-  if(inherits(tree, "networx")) rooted <- FALSE
+  if(!inherits(trees, "multiPhylo")) stop("Trees must be of class multiPhylo!")
   trees <- .uncompressTipLabel(trees) |> .compressTipLabel(ref=tree$tip.label)
   if(!rooted){
     trees <- unroot(trees)
     tree <- unroot(tree)
   }
   else{
-    if(any(!is.rooted(trees))) stop("All trees need to be rooted!")
+    if(!is.rooted(tree) || any(!is.rooted(trees))) stop("All trees need to be rooted!")
   }
   fun <- function(x){
     el <- numeric(max(x$edge))
     el[x$edge[,2]] <- x$edge.length
     el
   }
-  if(inherits(tree, "networx")) bp <- tree$splits
-  else bp <- bip(tree)
-
+  bp <- bip(tree)
   if(!rooted) bp <- SHORTwise(bp)
   m <- length(bp)
   res <- matrix(NA_real_, length(trees), m)
@@ -38,8 +35,7 @@ edge_length_matrix <- function(tree, trees, rooted=TRUE){
 ##' @title Assign and compute edge lengths from a sample of trees
 ##' @description This command can infer some average edge lengths and assign
 ##' them from a (bootstrap/MCMC) sample.
-##' @param tree a phylogenetic tree or splitnetwork where edge lengths are
-##' assigned to.
+##' @param tree tree where edge lengths are assigned to.
 ##' @param trees an object of class multiPhylo, where the average for the edges
 ##' is computed from.
 ##' @param fun a function to compute the average (default is median).
@@ -57,24 +53,18 @@ edge_length_matrix <- function(tree, trees, rooted=TRUE){
 ##' tree_compat <- allCompat(bs, rooted=TRUE) |>
 ##'               add_edge_length(bs)
 ##' plot(tree_compat)
-##' add_boxplot(tree_compat, bs, boxwex=.7)
+##' add_boxplot(tree_compat, bs)
 ##' @seealso \code{\link{node.depth.edgelength}}, \code{\link{consensus}},
-##' \code{\link{maxCladeCred}}, \code{\link{add_boxplot}}
+##' \code{\link{maxCladeCred}}
 ##' @keywords aplot
 ##' @export
 add_edge_length <- function(tree, trees, fun=\(x)median(na.omit(x)),
-                            rooted=all(is.rooted(trees))){
+                            rooted=TRUE){
   if(!rooted) tree <- unroot(tree)
   X <- edge_length_matrix(tree, trees, rooted)
   nh <- apply(X, 2, fun)
-  if(inherits(tree, "networx")){
-    tree$edge.length <- nh[tree$splitIndex]
-    attr(tree$splits, "weights") <- nh
-  }
-  else{
-    if(rooted) tree$edge.length <- nh[tree$edge[,1]] - nh[tree$edge[,2]]
-    else tree$edge.length <- nh[tree$edge[,2]]
-  }
+  if(rooted) tree$edge.length <- nh[tree$edge[,1]] - nh[tree$edge[,2]]
+  else tree$edge.length <- nh[tree$edge[,2]]
   tree
 }
 
@@ -105,12 +95,12 @@ add_edge_length <- function(tree, trees, fun=\(x)median(na.omit(x)),
 ##' set.seed(123)
 ##' trees <- bootstrap.phyDat(Laurasiatherian,
 ##'                           FUN=function(x)upgma(dist.hamming(x)), bs=100)
+##'                           tree <- plotBS(tree, trees, "phylogram")
 ##' tree <- plotBS(tree, trees, "phylogram")
 ##' add_ci(tree, trees)
 ##' plot(tree, direction="downwards")
 ##' add_boxplot(tree, trees, boxwex=.7)
-##' @seealso \code{\link{plot.phylo}}, \code{\link{plotBS}},
-##' \code{\link{add_edge_length}}
+##' @seealso \code{\link{plot.phylo}}, \code{\link{plotBS}}
 ##' @keywords aplot
 ##' @rdname add_ci
 ##' @export
@@ -119,9 +109,8 @@ add_ci <- function(tree, trees, col95 = "#FF00004D", col50 = "#0000FF4D",
 {
   lastPP <- get("last_plot.phylo", envir = ape::.PlotPhyloEnv)
   direction <- lastPP$direction
-  trees <- .uncompressTipLabel(trees)
-  if(!is.rooted(tree) || !all(is.rooted(trees))) stop("All trees need to be rooted!")
-  X <- edge_length_matrix(tree, trees, rooted=TRUE)[, -(seq_len(Ntip(tree)))]
+  if(!is.rooted(tree) || !all(is.rooted(trees))) stop("Trees need to be rooted!")
+  X <- edge_length_matrix(tree, trees, rooted=TRUE)[, -(seq_along(Ntip(tree)))]
   CI <- apply(X, 2, FUN=\(x)quantile(na.omit(x), probs=c(.025,.25,.75,.975)))
   horizontal <- FALSE
   if(direction=="rightwards" || direction=="leftwards"){

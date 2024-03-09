@@ -98,10 +98,12 @@ cbind.phyDat <- function(..., gaps="-", compress=TRUE){
   if (n == 1) return(x[[1]])
 
   types <- sapply(x, function(x)attr(x, "type"))
-  if(any(types!=types[1]))stop("Alignments must have same type!")
+# if(length(unique(types))>1) stop("All alignments need to have the same type!")
+  #  type <- attr(x[[1]], "type")
   nr <- numeric(n)
   ATTR <- attributes(x[[1]])
   nr[1] <- sum(attr(x[[1]], "weight"))
+  #  levels <- attr(x[[1]], "levels")
   allLevels <- attr(x[[1]], "allLevels")
   gapsInd <- match(gaps, allLevels)
   snames <- vector("list", n)
@@ -109,6 +111,7 @@ cbind.phyDat <- function(..., gaps="-", compress=TRUE){
   wvec <- numeric(n+1)
   objNames <- as.character(object)
   if(any(duplicated(objNames))) objNames <- paste0(objNames, 1:n)
+  #  tmp <- as.character(x[[1]])
 
   for(i in 1:n){
     snames[[i]] <- names(x[[i]])
@@ -157,27 +160,6 @@ cbind.phyDat <- function(..., gaps="-", compress=TRUE){
   ATTR$nr <- length(weight)
   attributes(tmp) <- ATTR
   tmp
-}
-
-
-# @rdname phyDat
-#' @export c.phyDat
-#' @export
-rbind.phyDat <- function(...){
-  x <- list(...)
-  types <- sapply(x, function(x)attr(x, "type"))
-  l <- sapply(x, function(x)sum(attr(x, "weight")))
-  if(any(l!=l[1]))stop("Alignments have different # of characters!")
-  if(any(types!=types[1]))stop("Alignments must have same type!")
-  nam <- lapply(x, names) |> unlist()
-  if(any(duplicated(nam)))stop("Duplicated names!")
-  m <- lengths(x)
-  mcs <- c(0, cumsum(m))
-  res <- matrix(NA_character_, sum(m), l[1], dimnames=list(nam, NULL))
-  for(i in seq_along(x)){
-    res[(mcs[i]+1):mcs[i+1], ] <- as.character(x[[i]])
-  }
-  phyDat(res, type=types[1])
 }
 
 
@@ -462,6 +444,7 @@ allSitePattern <- function(n, levels=NULL, names=NULL, type="DNA", code=1){
 }
 
 
+##constSitePattern <- function(n, levels=c("a", "c", "g", "t"), names=NULL){
 constSitePattern <- function(n, names=NULL, type="DNA", levels=NULL){
   if(type=="DNA"){
     levels <- c("a", "c", "g", "t")
@@ -510,7 +493,7 @@ constSitePattern <- function(n, names=NULL, type="DNA", levels=NULL){
 #'
 #' Felsenstein, J. (1993) Phylip (Phylogeny Inference Package) version 3.5c.
 #' Department of Genetics, University of Washington.
-#' \url{https://phylipweb.github.io/phylip/}
+#' \url{https://evolution.genetics.washington.edu/phylip/phylip.html}
 #' @keywords IO
 #' @export read.aa
 read.aa <- function (file, format = "interleaved", skip = 0, nlines = 0,
@@ -540,10 +523,10 @@ read.aa <- function (file, format = "interleaved", skip = 0, nlines = 0,
     oop <- options(warn = -1)
     fl.num <- as.numeric(unlist(strsplit(gsub("^ +", "", fl), " +")))
     options(oop)
-    if (all(is.na(fl.num))  || length(fl.num) != 2)
+    if (all(is.na(fl.num)))
       stop("the first line of the file must contain the dimensions of the data")
-#  if (length(fl.num) != 2)
-#    stop("the first line of the file must contain the dimensions of the data")
+    if (length(fl.num) != 2)
+      stop("the first line of the file must contain TWO numbers")
     else {
       n <- fl.num[1]
       s <- fl.num[2]

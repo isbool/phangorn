@@ -47,7 +47,6 @@ anova.pml <- function(object, ...) {
 }
 
 
-#' @rdname pml
 #' @export
 vcov.pml <- function(object, ...) {
   FI <- score(object, FALSE)[[2]]
@@ -58,6 +57,16 @@ vcov.pml <- function(object, ...) {
     res <- solve(FI + diag(l) * 1e-8)
   }
   res
+}
+
+
+#' @export
+plot.pml <- function(x, type="phylogram", ...){
+  type <- match.arg(type, c("phylogram","cladogram", "fan", "unrooted",
+                            "radial", "tidy"))
+  plot.phylo(x$tree, type=type, ...)
+  if(is.rooted(x$tree) & (type %in% c("phylogram","cladogram"))) axisPhylo()
+  else add.scale.bar()
 }
 
 
@@ -75,24 +84,10 @@ print.pml <- function(x, ...) {
   cat("unconstrained loglikelihood:", ll0, "\n")
   if (x$inv > 0) cat("Proportion of invariant sites:", x$inv, "\n")
   if (x$k > 1) {
-    cat("Model of rate heterogeneity: ")
-    if(x$site.rate=="gamma") cat("Discrete gamma model\n")
-    if(x$site.rate=="free_rate") cat("Free rate model\n")
-    if(x$site.rate=="gamma_quadrature") cat("Discrete gamma model (quadrature) \n")
-    if(x$site.rate=="gamma_unbiased") cat("Discrete gamma model (phangorn) \n")
+    cat("Discrete gamma model\n")
     cat("Number of rate categories:", x$k, "\n")
-    if(x$site.rate!="free_rate") cat("Shape parameter:", x$shape, "\n")
-    rate <- x$g
-    prop <- x$w
-    if (x$inv > 0) {
-      rate <- c(0, rate)
-      prop <- c(x$inv, prop)
-    }
-    rw <- cbind(Rate=rate, Proportion=prop)
-    row.names(rw) <- as.character(seq_len(nrow(rw)))
-    print(rw)
+    cat("Shape parameter:", x$shape, "\n")
   }
-  if(!is.null(x$method) && x$method == "tipdated") cat("\nRate:", x$rate, "\n")
   if (type == "AA") cat("Rate matrix:", x$model, "\n")
   if (type == "DNA") {
     cat("\nRate matrix:\n")

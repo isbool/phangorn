@@ -156,7 +156,7 @@ circNetwork <- function(x, ord = NULL) {
   X <- as.matrix(x)[, ord]
   Y <- X
   rsY <- rowSums(Y)
-  X <- X[ind, , drop=FALSE]
+  X <- X[ind, ]
 
   for (k in seq_along(ind)) {
     Vstart <- ord[1]
@@ -418,6 +418,66 @@ as.networx.phylo <- function(x, ...) {
 # }
 
 
+
+#' Computes a consensusNetwork from a list of trees Computes a \code{networx}
+#' object from a collection of splits.
+#'
+#' Computes a consensusNetwork, i.e. an object of class \code{networx} from a
+#' list of trees, i.e. an class of class \code{multiPhylo}. Computes a
+#' \code{networx} object from a collection of splits.
+#'
+#'
+#' @param obj An object of class multiPhylo.
+#' @param prob the proportion a split has to be present in all trees to be
+#' represented in the network.
+#' @param \dots Further arguments passed to or from other methods.
+#' @return \code{consensusNet} returns an object of class networx.  This is
+#' just an intermediate to plot phylogenetic networks with igraph.
+#' @author Klaus Schliep \email{klaus.schliep@@gmail.com}
+#' @seealso \code{\link{splitsNetwork}}, \code{\link{neighborNet}},
+#' \code{\link{lento}}, \code{\link{distanceHadamard}},
+#' \code{\link{plot.networx}}, \code{\link{maxCladeCred}}
+#' @references Holland B.R., Huber K.T., Moulton V., Lockhart P.J. (2004) Using
+#' consensus networks to visualize contradictory evidence for species
+#' phylogeny. \emph{Molecular Biology and Evolution}, \bold{21}, 1459--61
+#' @keywords hplot
+#' @examples
+#'
+#' data(Laurasiatherian)
+#' set.seed(1)
+#' bs <- bootstrap.phyDat(Laurasiatherian, FUN = function(x)nj(dist.hamming(x)),
+#'     bs=50)
+#' cnet <- consensusNet(bs, .3)
+#' plot(cnet)
+#' \dontrun{
+#' library(rgl)
+#' open3d()
+#' plot(cnet, type = "3D", show.tip.label=FALSE, show.nodes=TRUE)
+#' plot(cnet, type = "equal angle", show.edge.label=TRUE)
+#'
+#' tmpfile <- normalizePath(system.file(
+#'               "extdata/trees/RAxML_bootstrap.woodmouse", package="phangorn"))
+#' trees <- read.tree(tmpfile)
+#' cnet_woodmouse <- consensusNet(trees, .3)
+#' plot(cnet_woodmouse, type = "equal angle", show.edge.label=TRUE)
+#' }
+#'
+#' @export consensusNet
+consensusNet <- function(obj, prob = 0.3, ...) {
+  l <- length(obj)
+  spl <- as.splits(obj)
+  w <- attr(spl, "weights")
+  ind <- (w / l) > prob
+  spl <- spl[ind]
+  attr(spl, "confidences") <- (w / l)[ind]
+  #    attr(spl, "weights") = w[ind]
+  res <- as.networx(spl)
+  res$edge.labels <- as.character(res$edge.length / l * 100)
+  res$edge.labels[res$edge[, 2] <= length(res$tip.label)] <- ""
+  reorder(res)
+}
+
+
 #' @export
 reorder.networx <- function(x, order =  "cladewise", index.only = FALSE, ...) {
   order <- match.arg(order, c("cladewise", "postorder"))
@@ -499,6 +559,7 @@ coords.equal.angle <- function(obj) {
 coords <- function(obj, dim = "3D") {
   #    if(is.null(attr(obj,"order")) || (attr(obj, "order")=="postorder") )
   #        obj = reorder.networx(obj)
+
   if (dim == "equal_angle") return(coords.equal.angle(obj))
 
   l <- length(obj$edge.length)
@@ -508,6 +569,7 @@ coords <- function(obj, dim = "3D") {
   adj <- spMatrix(n, n, i = obj$edge[, 2], j = obj$edge[, 1],
                   x = rep(1, length(obj$edge.length)))
   g <- graph_from_adjacency_matrix(adj, "undirected")
+  ##########
   #    add this
   #    g2 <- graph(t(obj$edge), directed=FALSE)
   #    g2 <- set.edge.attribute(g, "weight", value=rep(1, nrow(obj$edge))
@@ -531,12 +593,10 @@ coords <- function(obj, dim = "3D") {
   else {
     coord <- layout_nicely(g, dim = 2)
     k <- matrix(0, max(obj$splitIndex), 2)
-    tmp <- coord[obj$edge[ind1, 2], ] - coord[obj$edge[ind1, 1], ]
-    k[obj$splitIndex[ind1], ] <- kart2kreis(tmp[,1], tmp[,2])
-#    for (i in ind1) {
-#      tmp <- coord[obj$edge[i, 2], ] - coord[obj$edge[i, 1], ]
-#      k[obj$splitIndex[i], ] <- kart2kreis(tmp[1], tmp[2])
-#    }
+    for (i in ind1) {
+      tmp <- coord[obj$edge[i, 2], ] - coord[obj$edge[i, 1], ]
+      k[obj$splitIndex[i], ] <- kart2kreis(tmp[1], tmp[2])
+    }
     k[obj$splitIndex[ind1], 1] <- obj$edge.length[ind1]
     res <- matrix(0, vcount(g), 2)
     for (i in 1:l) {
@@ -563,9 +623,8 @@ kart2kugel <- function(x, y, z) {
 kart2kreis <- function(x, y) {
   r <- sqrt(x * x + y * y)
   alpha <- atan(y / x)
-  #if (x < 0) alpha <- alpha + pi
-  if (any(x < 0)) alpha[x < 0] <- alpha[x < 0] + pi
-  cbind(r, alpha)
+  if (x < 0) alpha <- alpha + pi
+  c(r, alpha)
 }
 
 
@@ -592,13 +651,6 @@ edgeLabels <- function(xx, yy, zz = NULL, edge) {
     return(cbind(XX, YY, ZZ))
   }
   cbind(XX, YY)
-}
-
-
-rotate_matrix <- function(x, theta){
-  rot_matrix <- matrix(c(cos(theta), sin(theta), -sin(theta), cos(theta)),
-                       2, 2, byrow = TRUE)
-  x %*% rot_matrix
 }
 
 
@@ -645,9 +697,6 @@ rotate_matrix <- function(x, theta){
 #' @param font.edge.label the font used for the edge labels.
 #' @param underscore a logical specifying whether the underscores in tip labels
 #' should be written as spaces (the default) or left as are (if TRUE).
-#' @param angle rotate the plot.
-#' @param digits if edge labels are numerical a positive integer indicating how
-#' many significant digits are to be used.
 #' @param \dots Further arguments passed to or from other methods.
 #' @rdname plot.networx
 #' @note The internal representation is likely to change.
@@ -690,8 +739,7 @@ plot.networx <- function(x, type = "equal angle", use.edge.length = TRUE,
                          cex = par("cex"), cex.node.label = cex,
                          cex.edge.label = cex, col.node.label = tip.color,
                          col.edge.label = tip.color, font.node.label = font,
-                         font.edge.label = font, underscore = FALSE,
-                         angle=0, digits=3, ...) {
+                         font.edge.label = font, underscore = FALSE, ...) {
   type <- match.arg(type, c("equal angle", "3D", "2D"))
   if (use.edge.length == FALSE){
     x$edge.length[] <- 1
@@ -700,10 +748,8 @@ plot.networx <- function(x, type = "equal angle", use.edge.length = TRUE,
   nTips <- length(x$tip.label)
   conf <- attr(x$splits, "confidences")
   index <- x$splitIndex
-  if(!is.null(edge.label) && is.numeric(edge.label)) edge.label <- prettyNum(edge.label)
-  if (is.null(edge.label) && !is.null(conf)) {
+  if (is.null(edge.label) & !is.null(conf)) {
     conf <- conf[index]
-    if(is.numeric(conf)) conf <- prettyNum(format(conf, digits=digits))
     if (!is.null(x$translate)) conf[match(x$translate$node, x$edge[, 2])] <- ""
     else conf[x$edge[, 2] <= nTips] <- ""
     edge.label <- conf
@@ -760,10 +806,6 @@ plot.networx <- function(x, type = "equal angle", use.edge.length = TRUE,
       if (type == "equal angle") coord <- coords.equal.angle(x)
       else coord <- coords(x, dim = "2D")
     }
-    if(angle != 0){
-      angle <- angle * pi/180 #
-      coord <- rotate_matrix(coord, angle)
-    }
     plot2D(coord, x, show.tip.label = show.tip.label,
       show.edge.label = show.edge.label, edge.label = edge.label,
       show.node.label = show.node.label, node.label = node.label,
@@ -772,7 +814,7 @@ plot.networx <- function(x, type = "equal angle", use.edge.length = TRUE,
       cex.node.label = cex.node.label, cex.edge.label = cex.edge.label,
       col.node.label = col.node.label, col.edge.label = col.edge.label,
       font.node.label = font.node.label, font.edge.label = font.edge.label,
-      add = FALSE, ...)
+      add = FALSE)
   }
   x$.plot <- list(vertices = coord, edge.color = edge.color,
     edge.width = edge.width, edge.lty = edge.lty)
@@ -845,7 +887,7 @@ plot2D <- function(coords, net, show.tip.label = TRUE, show.edge.label = FALSE,
                    cex.node.label = cex,  cex.edge.label = cex,
                    col.node.label = tip.color, col.edge.label = tip.color,
                    font.node.label = font, font.edge.label = font,
-                   add = FALSE, direction="horizontal", ...) {
+                   add = FALSE, ...) {
   edge <- net$edge
   label <- net$tip.label
   xx <- coords[, 1]
@@ -854,7 +896,7 @@ plot2D <- function(coords, net, show.tip.label = TRUE, show.edge.label = FALSE,
 
   xlim <- range(xx)
   ylim <- range(yy)
-  direction <- match.arg(direction, c("horizontal", "axial"))
+
   if (show.tip.label) {
     offset <- max(nchar(label)) * 0.018 * cex * diff(xlim)
     xlim <- c(xlim[1] - offset, xlim[2] + offset)
@@ -869,42 +911,21 @@ plot2D <- function(coords, net, show.tip.label = TRUE, show.edge.label = FALSE,
   if (show.tip.label) {
     if (is.null(net$translate)) ind <- match(1:nTips, edge[, 2])
     else ind <- match(net$translate$node, edge[, 2])
-    if(direction=="horizontal"){
-      pos <- rep(4, nTips)
-      XX <- xx[edge[ind, 1]] - xx[edge[ind, 2]]
-      pos[XX > 0] <- 2
-      YY <- yy[edge[ind, 1]] - yy[edge[ind, 2]]
-      pos2 <- rep(3, nTips)
-      pos2[YY > 0] <- 1
-      # needed if tiplabels are not at internal nodes
-      XX[is.na(XX)] <- 0
-      YY[is.na(YY)] <- 0
-      pos[abs(YY) > abs(XX)] <- pos2[abs(YY) > abs(XX)]
-      if (is.null(net$translate)) text(xx[1:nTips], yy[1:nTips], labels = label,
+    pos <- rep(4, nTips)
+    XX <- xx[edge[ind, 1]] - xx[edge[ind, 2]]
+    pos[XX > 0] <- 2
+    YY <- yy[edge[ind, 1]] - yy[edge[ind, 2]]
+    pos2 <- rep(3, nTips)
+    pos2[YY > 0] <- 1
+    # needed if tiplabels are not at internal nodes
+    XX[is.na(XX)] <- 0
+    YY[is.na(YY)] <- 0
+    pos[abs(YY) > abs(XX)] <- pos2[abs(YY) > abs(XX)]
+    if (is.null(net$translate)) text(xx[1:nTips], yy[1:nTips], labels = label,
         pos = pos, col = tip.color, cex = cex, font = font)
-      else text(xx[net$translate$node], yy[net$translate$node], labels = label,
+    else text(xx[net$translate$node], yy[net$translate$node], labels = label,
         pos = pos, col = tip.color, cex = cex, font = font)
-    }
-    else {
-      XX <- xx[edge[ind, 2]] - xx[edge[ind, 1]]
-      YY <- yy[edge[ind, 2]] - yy[edge[ind, 1]]
-      angle <- kart2kreis(XX, YY)[,2]
-      adj <- abs(angle) > pi/2
-      angle <- angle * 180/pi # switch to degrees
-      angle[adj] <- angle[adj] - 180
-      adj <- as.numeric(adj)
-      ## `srt' takes only a single value, so can't vectorize this:
-      ## (and need to 'elongate' these vectors:)
-      font <- rep(font, length.out = nTips)
-      tip.color <- rep(tip.color, length.out = nTips)
-      cex <- rep(cex, length.out = nTips)
-      for (i in 1:length(label))
-        text(xx[i], yy[i], label[i], font = font[i],
-             cex = cex[i], srt = angle[i], adj = adj[i],
-             col = tip.color[i])
-    }
   }
-
   if (show.edge.label) {
     ec <- edgeLabels(xx, yy, edge = edge)
     if (is.null(edge.label)) edge.label <- net$splitIndex

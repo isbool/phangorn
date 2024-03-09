@@ -106,7 +106,6 @@ print.splits <- function(x, maxp = getOption("max.print"),
 
 changeOrder <- function(x, labels) {
   oldL <- attr(x, "labels")
-  if(identical(oldL, labels)) return(x)
   ind <- match(oldL, labels)
   for (i in seq_along(x))
     x[[i]] <- sort(ind[x[[i]]])
@@ -232,7 +231,6 @@ as.splits.multiPhylo <- function(x, ...) {
     trivial <- list(...)$trivial
   else trivial <- TRUE
   lx <-  length(x)
-  x <- .uncompressTipLabel(x)
   x <- unroot(x)
   splits <- prop.part(x)
   splits <- postprocess.prop.part(splits, method="SHORTwise")
@@ -433,7 +431,7 @@ as.splits.bitsplits <- function(x, ...){
 #' @export
 compatible <- function(obj1, obj2 = NULL) {
   if (!inherits(obj1, "splits"))
-    stop("obj must be of class splits")
+    stop("obj needs to be of class splits")
   labels <- attr(obj1, "labels")
   l <- length(labels)
   n <- length(obj1)
@@ -469,10 +467,11 @@ compatible <- function(obj1, obj2 = NULL) {
 # in clanistic.R ??
 compatible3 <- function(x, y = NULL) {
   if (!inherits(x, "splits"))
-    stop("x must be of class splits")
+    stop("x needs to be of class splits")
   if (is.null(y)) y <- x
+
   if (!inherits(y, "splits"))
-    stop("y must be of class splits")
+    stop("y needs to be of class splits")
   xlabels <- attr(x, "labels")
   ylabels <- attr(y, "labels")
   if (identical(xlabels, ylabels)) labels <- xlabels

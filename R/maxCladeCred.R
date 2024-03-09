@@ -23,7 +23,7 @@
 #' @author Klaus Schliep \email{klaus.schliep@@gmail.com}
 #' @seealso \code{\link{consensus}}, \code{\link{consensusNet}},
 #' \code{\link{prop.part}}, \code{\link{bootstrap.pml}}, \code{\link{plotBS}},
-#' \code{\link{transferBootstrap}}, \code{\link{add_edge_length}}
+#' \code{\link{transferBootstrap}}
 #' @keywords cluster
 #' @importFrom fastmatch fmatch
 #' @examples
@@ -109,7 +109,7 @@ mcc <- maxCladeCred
 #' @export
 allCompat <- function(x, rooted=FALSE) {
   x <- .compressTipLabel(x)
-  if(!rooted) x <- unroot(x, collapse.singles=TRUE)
+  if(!rooted) x <- unroot(x)
   l <- length(x)
   nt <- Ntip(x[[1]])
   pp <- prop.part(x)

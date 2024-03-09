@@ -2,23 +2,21 @@
 % Please edit documentation in R/ancestral_pml.R
 \name{ancestral.pml}
 \alias{ancestral.pml}
-\alias{as.phyDat.ancestral}
-\alias{as.data.frame.ancestral}
 \alias{ancestral.pars}
 \alias{pace}
+\alias{plotAnc}
 \title{Ancestral character reconstruction.}
 \usage{
-ancestral.pml(object, type = "marginal", return = "prob", ...)
-
-\method{as.phyDat}{ancestral}(x, ...)
-
-\method{as.data.frame}{ancestral}(x, ...)
+ancestral.pml(object, type = "marginal", return = "prob")
 
 ancestral.pars(tree, data, type = c("MPR", "ACCTRAN", "POSTORDER"),
-  cost = NULL, return = "prob", ...)
+  cost = NULL, return = "prob")
 
 pace(tree, data, type = c("MPR", "ACCTRAN", "POSTORDER"), cost = NULL,
-  return = "prob", ...)
+  return = "prob")
+
+plotAnc(tree, data, i = 1, site.pattern = TRUE, col = NULL,
+  cex.pie = par("cex"), pos = "bottomright", ...)
 }
 \arguments{
 \item{object}{an object of class pml}
@@ -27,23 +25,27 @@ pace(tree, data, type = c("MPR", "ACCTRAN", "POSTORDER"), cost = NULL,
 
 \item{return}{return a \code{phyDat} object or matrix of probabilities.}
 
-\item{\dots}{Further arguments passed to or from other methods.}
-
-\item{x}{an object of class ancestral.}
-
 \item{tree}{a tree, i.e. an object of class pml}
 
 \item{data}{an object of class phyDat}
 
 \item{cost}{A cost matrix for the transitions between two states.}
+
+\item{i}{plots the i-th site pattern of the \code{data}.}
+
+\item{site.pattern}{logical, plot i-th site pattern or i-th site}
+
+\item{col}{a vector containing the colors for all possible states.}
+
+\item{cex.pie}{a numeric defining the size of the pie graphs}
+
+\item{pos}{a character string defining the position of the legend}
+
+\item{\dots}{Further arguments passed to or from other methods.}
 }
 \value{
-An object of class ancestral containing theestimated character
-states.
-For \code{return="phyDat"} an object  of class "phyDat", containing
-the ancestral states of all nodes. For nucleotide data this can contain
-ambiguous states. Apart from fitch parsimony the most likely states are
-returned.
+%A matrix containing the the estimates character states. An object
+of class "phyDat", containing the ancestral states of all nodes.
 }
 \description{
 Marginal reconstruction of the ancestral character states.
@@ -56,16 +58,11 @@ The argument "type" defines the criterion to assign the internal nodes. For
 With parsimony reconstruction one has to keep in mind that there will be
 often no unique solution.
 
-The functions use node labels if these are present and unique. Otherwise the
-function \code{ape::MakeNodeLabel} is used to create them.
-
 For further details see vignette("Ancestral").
 }
 \examples{
 
 example(NJ)
-# generate node labels to ensure plotting will work
-tree <- makeNodeLabel(tree)
 fit <- pml(tree, Laurasiatherian)
 anc.ml <- ancestral.pml(fit, type = "ml")
 anc.p <- ancestral.pars(tree, Laurasiatherian)
@@ -92,8 +89,7 @@ Press, Oxford.
 }
 \seealso{
 \code{\link{pml}}, \code{\link{parsimony}}, \code{\link[ape]{ace}},
-\code{\link{plotAnc}}, \code{\link[ape]{root}},
-\code{\link[ape]{makeNodeLabel}}
+\code{\link[ape]{root}}
 }
 \author{
 Klaus Schliep \email{klaus.schliep@gmail.com}

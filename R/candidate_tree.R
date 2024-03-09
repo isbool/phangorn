@@ -35,7 +35,7 @@ candidate_tree <- function(x, method=c("unrooted", "ultrametric", "tipdated"),
     enforce_ultrametric <- TRUE
   }
   if(method=="unrooted"){
-    tree <- pratchet(x, maxit=5L, trace=0, perturbation = "stochastic")
+    tree <- pratchet(x, maxit=10L, trace=0, perturbation = "ratchet")
     tree <- multi2di(tree)
     tree <- unroot(tree)
     tree <- acctran(tree, x)
@@ -45,7 +45,11 @@ candidate_tree <- function(x, method=c("unrooted", "ultrametric", "tipdated"),
     if(is.null(tip.dates)) stop("Argument tip.dates is missing!")
     if(is.null(names(tip.dates))) names(tip.dates) <- names(x)
     dm <- dist.ml(x, ...)
-    tree <- supgma(dm, tip.dates)
+    tree <- fastme.ols(dm)
+    tree <- rtt(tree, tip.dates[tree$tip.label])
+    tree <- nnls.tree(dm, tree, method = "tipdated",
+                      tip.dates=tip.dates[tree$tip.label])
+    tree$tip.dates <- tip.dates[tree$tip.label]
   }
   minEdge(tree, tau=eps, enforce_ultrametric=enforce_ultrametric)
 }

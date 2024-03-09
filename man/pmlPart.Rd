@@ -6,21 +6,17 @@
 \alias{pmlPart}
 \title{Partition model.}
 \usage{
-multiphyDat2pmlPart(x, method = "unrooted", tip.dates = NULL, ...)
+multiphyDat2pmlPart(x, rooted = FALSE, ...)
 
 pmlPart2multiPhylo(x)
 
 pmlPart(formula, object, control = pml.control(epsilon = 1e-08, maxit = 10,
-  trace = 1), model = NULL, method = "unrooted", ...)
+  trace = 1), model = NULL, rooted = FALSE, ...)
 }
 \arguments{
 \item{x}{an object of class \code{pmlPart}}
 
-\item{method}{One of "unrooted", "ultrametric" or "tiplabeled". Only unrooted
-is properly supported right now.}
-
-\item{tip.dates}{A named vector of sampling times associated to the
-tips/sequences. Leave empty if not estimating tip dated phylogenies.}
+\item{rooted}{Are the gene trees rooted (ultrametric) or unrooted.}
 
 \item{\dots}{Further arguments passed to or from other methods.}
 

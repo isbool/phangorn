@@ -48,9 +48,9 @@ set.seed(1)
 bs <- bootstrap.phyDat(Laurasiatherian,
                        FUN = function(x) upgma(dist.hamming(x)), bs=50)
 
-mrp_st <- superTree(bs, minit = 25, maxit=50)
+mrp_st <- superTree(bs)
 plot(mrp_st)
-\donttest{
+\dontrun{
 rf_st <- superTree(bs, method = "RF")
 spr_st <- superTree(bs, method = "SPR")
 }
