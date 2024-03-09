@@ -898,7 +898,7 @@ NumericVector pscore_node(Fitch* obj, const IntegerMatrix & orig){
       parent += states;
       tmp = ~orvand & ones;
       // pars[anc[k] - 1L] += popcnt64(tmp); // type issue when compiling to wasm
-      pars[static_cast<R_xlen_t>(anc[k] - 1)] += popcnt64(tmp) // fix
+      pars[static_cast<R_xlen_t>(anc[k] - 1)] += popcnt64(tmp); // fix
     }
   }
   if(unrooted){
