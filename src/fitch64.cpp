@@ -897,7 +897,8 @@ NumericVector pscore_node(Fitch* obj, const IntegerMatrix & orig){
       child2 += states;
       parent += states;
       tmp = ~orvand & ones;
-      pars[anc[k] - 1L] += popcnt64(tmp);
+      // pars[anc[k] - 1L] += popcnt64(tmp); to fix
+      pars[static_cast<R_xlen_t>(anc[k] - 1)] += popcnt64(tmp); //fixed
     }
   }
   if(unrooted){
