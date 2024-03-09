@@ -1,0 +1,79 @@
+Package: phangorn
+Title: Phylogenetic Reconstruction and Analysis
+Version: 3.0.0.0
+Authors@R: 
+    c(person("Klaus", "Schliep", role = c("aut", "cre"),
+             email = "klaus.schliep@gmail.com",
+             comment = c(ORCID = "0000-0003-2941-0161")),
+      person("Emmanuel", "Paradis", role = "aut",
+             comment = c(ORCID = "0000-0003-3092-2199")),
+      person("Leonardo", "de Oliveira Martins", role = "aut",
+             comment = c(ORCID = "0000-0001-5247-1320")),
+      person("Alastair", "Potts", role = "aut"),
+      person("Iris", "Bardel-Kahr", role = "aut",
+             comment = c(ORCID = "0000-0002-8950-834X")),            
+      person("Tim W.", "White", role = "ctb"),
+      person("Cyrill", "Stachniss", role = "ctb"),
+      person("Michelle", "Kendall", role = "ctb",
+             email = "m.kendall@imperial.ac.uk"),
+      person("Keren", "Halabi",  role = "ctb"),
+      person("Richel", "Bilderbeek",  role = "ctb"),
+      person("Kristin", "Winchell", role = "ctb"),
+      person("Liam", "Revell", role = "ctb"),
+      person("Mike", "Gilchrist", role = "ctb"),
+      person("Jeremy", "Beaulieu", role = "ctb"),
+      person("Brian", "O'Meara", role = "ctb"),
+      person("Long", "Qu", role = "ctb"), 
+      person(given= "Joseph", "Brown", role = "ctb", 
+             comment = c(ORCID = "0000-0002-3835-8062")),
+      person(given="Santiago", "Claramunt", role = "ctb", 
+             comment = c(ORCID = "0000-0002-8926-5974")))
+Description: Allows for estimation of phylogenetic trees and networks
+    using Maximum Likelihood, Maximum Parsimony, distance methods and
+    Hadamard conjugation (Schliep 2011). Offers methods for tree comparison, 
+    model selection and visualization of phylogenetic networks as described in
+    Schliep et al. (2017).
+License: GPL (>= 2)
+URL: https://github.com/KlausVigo/phangorn,
+    https://klausvigo.github.io/phangorn/
+BugReports: https://github.com/KlausVigo/phangorn/issues
+Depends:
+    ape (>= 5.7),
+    R (>= 4.1.0)
+Imports:
+    digest,
+    fastmatch,
+    generics,
+    graphics,
+    grDevices,
+    igraph (>= 1.0),
+    Matrix,
+    methods,
+    parallel,
+    quadprog,
+    Rcpp,
+    stats,
+    utils
+Suggests:
+    apex,
+    Biostrings,
+    knitr,
+    magick,
+    rgl,
+    rmarkdown,
+    seqinr,
+    seqLogo,
+    tinytest,
+    xtable
+LinkingTo:
+    Rcpp
+Remotes: github::EmmanuelParadis/ape
+VignetteBuilder: 
+    knitr,
+    utils
+biocViews: Software, Technology, QualityControl
+Encoding: UTF-8
+Repository: CRAN
+Roxygen: list(old_usage = TRUE)
+RoxygenNote: 7.3.1
+Language: en-US

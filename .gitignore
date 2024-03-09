@@ -1,0 +1,11 @@
+.Rproj.user
+.Rhistory
+.RData
+src/*.o
+src/*.so
+src/*.dll
+.httr-oauth
+TODO
+docs
+vignettes/revdep/
+to_do.txt
