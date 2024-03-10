@@ -38,7 +38,7 @@ std::vector<std::vector<uint64_t>> readFitch(const List &xlist, IntegerMatrix co
     tmp.push_back(0ull);
   for (int i = 0; i < nSeq; ++i)
   {
-    Rcpp::NumericVector y(xlist[i]);
+    Rcpp::IntegerVector y(xlist[i]);
     current_bit = 0;
     for (int j = 0; j < nChar; ++j)
     {
@@ -117,16 +117,16 @@ IntegerMatrix getAnc(Fitch *obj, int i)
   return (res);
 }
 
-NumericVector getAncAmb(Fitch *obj, int i)
+IntegerVector getAncAmb(Fitch *obj, int i)
 {
   int states = obj->nStates;
   int nBits = obj->nBits;
   uint64_t tmp;
   std::vector<std::vector<uint64_t>> vector = obj->X;
-  NumericVector xx = NumericVector::create(1, 2, 4, 8);
+  IntegerVector xx = IntegerVector::create(1, 2, 4, 8);
   uint64_t *seq;
   seq = vector[i - 1].data();
-  NumericVector res(BIT_SIZE * nBits);
+  IntegerVector res(BIT_SIZE * nBits);
   for (int i = 0; i < nBits; ++i)
   {
     for (int j = 0; j < states; ++j)
@@ -301,8 +301,8 @@ void traverse(Fitch *obj, const IntegerMatrix &orig)
   int states = obj->nStates;
   int nBits = obj->nBits;
 
-  NumericVector anc = orig(_, 0);
-  NumericVector desc = orig(_, 1);
+  IntegerVector anc = orig(_, 0);
+  IntegerVector desc = orig(_, 1);
 
   int nl = desc.size();
   int unrooted = nl % 2;
@@ -326,8 +326,8 @@ void traversetwice(Fitch *obj, const IntegerMatrix &orig, int nni)
   int states = obj->nStates;
   int nBits = obj->nBits;
   int nTips = obj->nSeq;
-  NumericVector anc = orig(_, 0);
-  NumericVector desc = orig(_, 1);
+  IntegerVector anc = orig(_, 0);
+  IntegerVector desc = orig(_, 1);
 
   if (nni > 0)
     nni = nTips - 1;
@@ -405,8 +405,8 @@ void acctran_traverse(Fitch *obj, const IntegerMatrix &orig)
 {
   int states = obj->nStates;
   int nBits = obj->nBits;
-  NumericVector anc = orig(_, 0);
-  NumericVector desc = orig(_, 1);
+  IntegerVector anc = orig(_, 0);
+  IntegerVector desc = orig(_, 1);
   for (int i = 0; i < anc.size(); ++i)
   {
     acctran_help(obj->X[desc[i] - 1].data(),
@@ -420,7 +420,7 @@ void root_all_node(Fitch *obj, const IntegerMatrix orig)
   int nBits = obj->nBits;
   int nSeq = obj->nSeq;
   //  std::vector< std::vector<uint64_t> > vector = obj->X;
-  NumericVector node = orig(_, 1);
+  IntegerVector node = orig(_, 1);
 
   for (int i = 0; i < node.size(); ++i)
   {
@@ -704,7 +704,7 @@ IntegerMatrix pscore_nni(Fitch *obj, IntegerMatrix &M)
 }
 
 /*
-int get_quartet(Fitch* obj, NumericVector & M){
+int get_quartet(Fitch* obj, IntegerVector & M){
   std::vector< std::vector<uint64_t> > X = obj->X;
   int states = obj->nStates;
   int nBits = obj->nBits;
@@ -716,7 +716,7 @@ int get_quartet(Fitch* obj, NumericVector & M){
 }
 */
 
-NumericVector pscore_vec(Fitch *obj, NumericVector &edge_to, int node_from)
+NumericVector pscore_vec(Fitch *obj, IntegerVector &edge_to, int node_from)
 {
   // std::vector<double> res;
   int n = edge_to.size();
@@ -759,16 +759,16 @@ NumericVector hamming_dist(Fitch *obj)
   return (ans);
 }
 
-NumericVector sitewise_pscore(Fitch *obj, const IntegerMatrix &orig)
+IntegerVector sitewise_pscore(Fitch *obj, const IntegerMatrix &orig)
 {
   int i, j;
   int states = obj->nStates;
   int nBits = obj->nBits;
   std::vector<std::vector<uint64_t>> vector = obj->X;
-  NumericVector pars(nBits * BIT_SIZE);
+  IntegerVector pars(nBits * BIT_SIZE);
 
-  NumericVector anc = orig(_, 0);
-  NumericVector desc = orig(_, 1);
+  IntegerVector anc = orig(_, 0);
+  IntegerVector desc = orig(_, 1);
 
   int nl = desc.size();
   int unrooted = nl % 2;
@@ -848,8 +848,8 @@ double pscore(Fitch *obj, const IntegerMatrix &orig)
 
   int p0 = obj->p0;
 
-  NumericVector anc = orig(_, 0);
-  NumericVector desc = orig(_, 1);
+  IntegerVector anc = orig(_, 0);
+  IntegerVector desc = orig(_, 1);
 
   int nl = desc.size();
   int unrooted = nl % 2;
@@ -884,10 +884,8 @@ double pscore(Fitch *obj, const IntegerMatrix &orig)
       child2 += states;
       parent += states;
       tmp = ~orvand & ones;
-      for (int l = 0; l < BIT_SIZE; ++l)
-      {
-        if ((tmp >> l) & 1ull)
-          pars += obj->weight[i * BIT_SIZE + l];
+      for(int l=0; l<BIT_SIZE; ++l){
+        if((tmp >> l) & 1ull) pars+= obj->weight[i*BIT_SIZE + l];  // problem
       }
     }
     for (int i = obj->wBits; i < nBits; ++i)
@@ -960,8 +958,8 @@ NumericVector pscore_node(Fitch *obj, const IntegerMatrix &orig)
   int nSeq = obj->nSeq;
   NumericVector pars(2 * nSeq);
 
-  NumericVector anc = orig(_, 0);
-  NumericVector desc = orig(_, 1);
+  IntegerVector anc = orig(_, 0);
+  IntegerVector desc = orig(_, 1);
 
   int nl = desc.size();
   int unrooted = nl % 2;
@@ -996,15 +994,10 @@ NumericVector pscore_node(Fitch *obj, const IntegerMatrix &orig)
       child2 += states;
       parent += states;
       tmp = ~orvand & ones;
-      // for(int l=0; l<BIT_SIZE; ++l){
-      //   if((tmp >> l) & 1ull) pars[anc[k] - 1L]+= obj->weight[i*BIT_SIZE + l]; // fixed
-      // }
       for (int l = 0; l < BIT_SIZE; ++l)
       {
         if ((tmp >> l) & 1ull)
-        {
-          pars[static_cast<R_xlen_t>(anc[k] - 1)] += obj->weight[i * BIT_SIZE + l];
-        }
+          pars[anc[k] - 1L] += obj->weight[i * BIT_SIZE + l];
       }
     }
     for (int i = obj->wBits; i < nBits; ++i)
@@ -1020,7 +1013,7 @@ NumericVector pscore_node(Fitch *obj, const IntegerMatrix &orig)
       child2 += states;
       parent += states;
       tmp = ~orvand & ones;
-      // pars[anc[k] - 1L] += popcnt64(tmp);
+      // pars[anc[k] - 1L] += popcnt64(tmp); // problem
       pars[static_cast<R_xlen_t>(anc[k] - 1)] += popcnt64(tmp); // fixed
     }
   }
@@ -1077,8 +1070,8 @@ NumericVector pscore_acctran(Fitch *obj, const IntegerMatrix &orig)
   int nSeq = obj->nSeq;
   NumericVector pars(2 * nSeq);
 
-  NumericVector anc = orig(_, 0);
-  NumericVector desc = orig(_, 1);
+  IntegerVector anc = orig(_, 0);
+  IntegerVector desc = orig(_, 1);
 
   for (int i = 0; i < desc.size(); ++i)
   {
