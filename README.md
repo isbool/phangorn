@@ -9,15 +9,8 @@
 phangorn is a package for phylogenetic reconstruction and analysis in the R language. phangorn offers the possibility of reconstructing phylogenies with distance based methods, maximum parsimony or maximum likelihood (ML) and performing Hadamard conjugation. Extending the general ML framework, this package provides the possibility of estimating mixture and partition models. Furthermore, phangorn offers several functions for comparing trees, phylogenetic models or splits, simulating character data and performing congruence analyses. 
 
 You can install
-- the latest released version `install.packages("phangorn")`
-- the latest development version `remotes::install_github("KlausVigo/phangorn")`
+- the latest released version `install.packages('phangorn', repos = c('https://isbool.r-universe.dev', 'https://cloud.r-project.org'))`
 
-To install the development version you may need to install the Biostrings and seqLogo package from bioconductor first:
-```
-if (!requireNamespace("BiocManager", quietly = TRUE))
-    install.packages("BiocManager")
-BiocManager::install(c("Biostrings", "seqLogo"))
-```
 Also the development version usually depends on the latest ape development 
 version and information to download can be found  [here](http://ape-package.ird.fr/ape_installation.html). 
 Additionally you may need to install on windows [Rtools](https://cran.r-project.org/bin/windows/Rtools/) and on mac [XCode](https://developer.apple.com/xcode/)
