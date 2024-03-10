@@ -14,16 +14,16 @@
 
 /*
 // Examples from Dirk to find minimum dist
-double vecmin(NumericVector x) {
+double vecmin(IntegerVector x) {
   // Rcpp supports STL-style iterators
-  NumericVector::iterator it = std::min_element(x.begin(), x.end());
+  IntegerVector::iterator it = std::min_element(x.begin(), x.end());
   // we want the value so dereference
   return *it;
 }
 
-int vecminInd(NumericVector x) {
+int vecminInd(IntegerVector x) {
   // Rcpp supports STL-style iterators
-  NumericVector::iterator it = std::min_element(x.begin(), x.end());
+  IntegerVector::iterator it = std::min_element(x.begin(), x.end());
   // we want the position (+1 in R)
   return it - x.begin();
 }
@@ -399,7 +399,7 @@ void prep_spr(Fitch* obj, IntegerMatrix orig){
 
 
 // generic, TODO: bitcount, 2x2, 4x4
-double pscore_vector_generic(const uint64_t* x, const uint64_t* y, const NumericVector weight,
+double pscore_vector_generic(const uint64_t* x, const uint64_t* y, const IntegerVector weight,
                      int nBits, int wBits, int states){
   double pscore = 0.0;
   uint64_t ones = ~0ull;
@@ -470,7 +470,7 @@ int equal_vector_generic(const uint64_t* x, const uint64_t* y,
 
 
 
-double pscore_vector_4x4(const uint64_t* x, const uint64_t* y, const NumericVector weight,
+double pscore_vector_4x4(const uint64_t* x, const uint64_t* y, const IntegerVector weight,
                      int nBits, int wBits, int states){
   double pscore = 0.0;
   uint64_t ones = ~0ull;
@@ -498,7 +498,7 @@ double pscore_vector_4x4(const uint64_t* x, const uint64_t* y, const NumericVect
 }
 
 
-double pscore_vector_2x2(const uint64_t* x, const uint64_t* y, const NumericVector weight,
+double pscore_vector_2x2(const uint64_t* x, const uint64_t* y, const IntegerVector weight,
                          int nBits, int wBits, int states){
   double pscore = 0.0;
   uint64_t ones = ~0ull;
@@ -525,7 +525,7 @@ double pscore_vector_2x2(const uint64_t* x, const uint64_t* y, const NumericVect
   return(pscore);
 }
 
-double pscore_vector(const uint64_t* x, const uint64_t* y, const NumericVector weight,
+double pscore_vector(const uint64_t* x, const uint64_t* y, const IntegerVector weight,
                    int nBits, int wBits, int states)
 {
   double res=0.0;
@@ -540,7 +540,7 @@ double pscore_vector(const uint64_t* x, const uint64_t* y, const NumericVector w
 
 
 int pscore_quartet(const uint64_t* a, const uint64_t* b, const uint64_t* c,
-                   const uint64_t* d, const NumericVector weight,
+                   const uint64_t* d, const IntegerVector weight,
                    int nBits, int wBits, int states)
 {
   double pscore = 0.0;
@@ -608,7 +608,7 @@ IntegerMatrix pscore_nni(Fitch* obj, IntegerMatrix & M){
   int states = obj->nStates;
   int nBits = obj->nBits;
   int wBits = obj->wBits;
-  NumericVector weight = obj->weight;
+  IntegerVector weight = obj->weight;
   int a=0, b=0, c=0, d=0;
 
   for (int i = 0; i < nr; i++) {
@@ -634,21 +634,21 @@ int get_quartet(Fitch* obj, IntegerVector & M){
   int states = obj->nStates;
   int nBits = obj->nBits;
   int wBits = obj->wBits;
-  NumericVector weight = obj->weight;
+  IntegerVector weight = obj->weight;
   int res = pscore_quartet(X[M[0]].data(), X[M[1]].data(), X[M[2]].data(), X[M[3]].data(),
         weight, nBits, wBits, states);
   return(res);
 }
 */
 
-NumericVector pscore_vec(Fitch* obj, IntegerVector & edge_to, int node_from){
+IntegerVector pscore_vec(Fitch* obj, IntegerVector & edge_to, int node_from){
   // std::vector<double> res;
   int n = edge_to.size();
-  NumericVector res(n);
+  IntegerVector res(n);
   int states = obj->nStates;
   int nBits = obj->nBits;
   int wBits = obj->wBits;
-  NumericVector weight = obj->weight;
+  IntegerVector weight = obj->weight;
   uint64_t * node_vec;
   node_vec = obj->X[node_from - 1L].data();
   //  #pragma omp parallel for num_threads(4)
@@ -660,7 +660,7 @@ NumericVector pscore_vec(Fitch* obj, IntegerVector & edge_to, int node_from){
 }
 
 // dist.hamming works for >31 states, TODO openMP
-NumericVector hamming_dist(Fitch* obj){
+IntegerVector hamming_dist(Fitch* obj){
   int i, j;
   size_t  ij;
   int states = obj->nStates;
@@ -670,8 +670,8 @@ NumericVector hamming_dist(Fitch* obj){
   R_xlen_t N;
   N = (R_xlen_t)nTips * (nTips-1)/2;
   std::vector< std::vector<uint64_t> > X = obj->X;
-  NumericVector weight = obj->weight;
-  NumericVector ans(N);
+  IntegerVector weight = obj->weight;
+  IntegerVector ans(N);
   ij = 0;
   i=0;
   j=1;
@@ -844,13 +844,13 @@ double pscore(Fitch* obj, const IntegerMatrix & orig){
 }
 
 
-NumericVector pscore_node(Fitch* obj, const IntegerMatrix & orig){
+IntegerVector pscore_node(Fitch* obj, const IntegerMatrix & orig){
   int i,j;
   int states = obj->nStates;
   int nBits = obj->nBits;
   std::vector< std::vector<uint64_t> > vector = obj->X;
   int nSeq = obj->nSeq;
-  NumericVector pars(2 * nSeq);
+  IntegerVector pars(2 * nSeq);
 
   IntegerVector anc = orig( _, 0);
   IntegerVector desc = orig( _, 1);
@@ -897,8 +897,8 @@ NumericVector pscore_node(Fitch* obj, const IntegerMatrix & orig){
       child2 += states;
       parent += states;
       tmp = ~orvand & ones;
-      // pars[anc[k] - 1L] += popcnt64(tmp); to fix
-      pars[static_cast<R_xlen_t>(anc[k] - 1)] += popcnt64(tmp); //fixed
+      pars[anc[k] - 1L] += popcnt64(tmp); to fix
+      // pars[static_cast<R_xlen_t>(anc[k] - 1)] += popcnt64(tmp); //fixed
     }
   }
   if(unrooted){
@@ -937,13 +937,13 @@ NumericVector pscore_node(Fitch* obj, const IntegerMatrix & orig){
 }
 
 
-NumericVector pscore_acctran(Fitch* obj, const IntegerMatrix & orig){
+IntegerVector pscore_acctran(Fitch* obj, const IntegerMatrix & orig){
   int states = obj->nStates;
   int nBits = obj->nBits;
   int wBits = obj->wBits;
-  NumericVector weight = obj->weight;
+  IntegerVector weight = obj->weight;
   int nSeq = obj->nSeq;
-  NumericVector pars(2 * nSeq);
+  IntegerVector pars(2 * nSeq);
 
   IntegerVector anc = orig( _, 0);
   IntegerVector desc = orig( _, 1);

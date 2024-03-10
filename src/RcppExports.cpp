@@ -11,12 +11,12 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
 // fhm_new
-NumericVector fhm_new(NumericVector v, int n);
+IntegerVector fhm_new(IntegerVector v, int n);
 RcppExport SEXP _phangorn_fhm_new(SEXP vSEXP, SEXP nSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericVector >::type v(vSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type v(vSEXP);
     Rcpp::traits::input_parameter< int >::type n(nSEXP);
     rcpp_result_gen = Rcpp::wrap(fhm_new(v, n));
     return rcpp_result_gen;
@@ -57,13 +57,13 @@ BEGIN_RCPP
 END_RCPP
 }
 // out_cpp
-IntegerVector out_cpp(NumericVector d, NumericVector r, int n);
+IntegerVector out_cpp(IntegerVector d, IntegerVector r, int n);
 RcppExport SEXP _phangorn_out_cpp(SEXP dSEXP, SEXP rSEXP, SEXP nSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericVector >::type d(dSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type r(rSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type d(dSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type r(rSEXP);
     Rcpp::traits::input_parameter< int >::type n(nSEXP);
     rcpp_result_gen = Rcpp::wrap(out_cpp(d, r, n));
     return rcpp_result_gen;
@@ -166,26 +166,26 @@ BEGIN_RCPP
 END_RCPP
 }
 // node_height_cpp
-NumericVector node_height_cpp(IntegerVector edge1, IntegerVector edge2, NumericVector edge_length);
+IntegerVector node_height_cpp(IntegerVector edge1, IntegerVector edge2, IntegerVector edge_length);
 RcppExport SEXP _phangorn_node_height_cpp(SEXP edge1SEXP, SEXP edge2SEXP, SEXP edge_lengthSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< IntegerVector >::type edge1(edge1SEXP);
     Rcpp::traits::input_parameter< IntegerVector >::type edge2(edge2SEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type edge_length(edge_lengthSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type edge_length(edge_lengthSEXP);
     rcpp_result_gen = Rcpp::wrap(node_height_cpp(edge1, edge2, edge_length));
     return rcpp_result_gen;
 END_RCPP
 }
 // cophenetic_cpp
-NumericVector cophenetic_cpp(IntegerMatrix edge, NumericVector edge_length, int nTips, int nNode);
+IntegerVector cophenetic_cpp(IntegerMatrix edge, IntegerVector edge_length, int nTips, int nNode);
 RcppExport SEXP _phangorn_cophenetic_cpp(SEXP edgeSEXP, SEXP edge_lengthSEXP, SEXP nTipsSEXP, SEXP nNodeSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< IntegerMatrix >::type edge(edgeSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type edge_length(edge_lengthSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type edge_length(edge_lengthSEXP);
     Rcpp::traits::input_parameter< int >::type nTips(nTipsSEXP);
     Rcpp::traits::input_parameter< int >::type nNode(nNodeSEXP);
     rcpp_result_gen = Rcpp::wrap(cophenetic_cpp(edge, edge_length, nTips, nNode));
@@ -193,13 +193,13 @@ BEGIN_RCPP
 END_RCPP
 }
 // threshStateC
-IntegerVector threshStateC(NumericVector x, NumericVector thresholds);
+IntegerVector threshStateC(IntegerVector x, IntegerVector thresholds);
 RcppExport SEXP _phangorn_threshStateC(SEXP xSEXP, SEXP thresholdsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type thresholds(thresholdsSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type thresholds(thresholdsSEXP);
     rcpp_result_gen = Rcpp::wrap(threshStateC(x, thresholds));
     return rcpp_result_gen;
 END_RCPP

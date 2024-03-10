@@ -16,13 +16,13 @@ List allSiblingsCPP(const IntegerMatrix & edge);
 
 IntegerVector p2dna(NumericMatrix xx, double eps=0.999);
 
-NumericVector node_height_cpp(IntegerVector edge1, IntegerVector edge2,
-                              NumericVector edge_length);
+IntegerVector node_height_cpp(IntegerVector edge1, IntegerVector edge2,
+                              IntegerVector edge_length);
 
-NumericVector cophenetic_cpp(IntegerMatrix edge, NumericVector edge_length,
+IntegerVector cophenetic_cpp(IntegerMatrix edge, IntegerVector edge_length,
                              int nTips, int nNode);
 
-IntegerVector threshStateC(NumericVector x, NumericVector thresholds);
+IntegerVector threshStateC(IntegerVector x, IntegerVector thresholds);
 
 int countCycle_cpp(IntegerMatrix M);
 

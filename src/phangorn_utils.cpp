@@ -13,7 +13,7 @@ int give_index3(int i, int j, int n)
 
 
 // [[Rcpp::export]]
-NumericVector fhm_new(NumericVector v, int n){
+IntegerVector fhm_new(IntegerVector v, int n){
   unsigned int l, i, j;
   unsigned int start, step, num_splits;
   unsigned int max_n = (unsigned int)n;
@@ -106,7 +106,7 @@ IntegerVector countCycle2_cpp(IntegerMatrix M){
 
 // speed up some code for NJ
 // [[Rcpp::export]]
-IntegerVector out_cpp(NumericVector d, NumericVector r, int n){
+IntegerVector out_cpp(IntegerVector d, IntegerVector r, int n){
   int i, j; //, k, l;
   double res, tmp;
 //  k=1;
@@ -372,10 +372,10 @@ IntegerVector p2dna(NumericMatrix xx, double eps=0.999){
 
 
 // [[Rcpp::export]]
-NumericVector node_height_cpp(IntegerVector edge1, IntegerVector edge2,
-                              NumericVector edge_length)
+IntegerVector node_height_cpp(IntegerVector edge1, IntegerVector edge2,
+                              IntegerVector edge_length)
 {
-    NumericVector xx(max(edge2));
+    IntegerVector xx(max(edge2));
     for (int i = (edge2.size() - 1); i >= 0; i--)
         xx[edge2[i] - 1] = xx[edge1[i] - 1] + edge_length[i];
     return(max(xx) - xx);
@@ -388,7 +388,7 @@ Fast cophenetic distance
 */
 
 
-void copheneticHelpCpp(std::vector<int> left, std::vector<int> right, int h, NumericVector nh, int nTips, NumericVector dm){
+void copheneticHelpCpp(std::vector<int> left, std::vector<int> right, int h, IntegerVector nh, int nTips, IntegerVector dm){
     int ind;
     for(std::size_t i=0; i<left.size(); i++){
         for(std::size_t j=0; j<right.size(); j++){
@@ -400,17 +400,17 @@ void copheneticHelpCpp(std::vector<int> left, std::vector<int> right, int h, Num
 
 
 // [[Rcpp::export]]
-NumericVector cophenetic_cpp(IntegerMatrix edge, NumericVector edge_length,
+IntegerVector cophenetic_cpp(IntegerMatrix edge, IntegerVector edge_length,
                              int nTips, int nNode){
     IntegerVector parents = edge( _, 0);
     IntegerVector children = edge( _, 1);
-    NumericVector nh = node_height_cpp(parents, children, edge_length);
+    IntegerVector nh = node_height_cpp(parents, children, edge_length);
     List ch = allChildrenCPP(edge);
     std::vector< std::vector<int> > bip = bipCPP(edge, nTips);
-    NumericVector dm( nTips * (nTips-1) /2 );
+    IntegerVector dm( nTips * (nTips-1) /2 );
     int l=0, left, right;
     for(int h=nNode; h<(nNode + nTips); h++){
-        // changed from NumericVector to IntegerVector
+        // changed from IntegerVector to IntegerVector
         IntegerVector tmp_ch = ch[h];
         l = tmp_ch.size();
         for(int j=0; j<(l-1L); j++){
@@ -429,7 +429,7 @@ NumericVector cophenetic_cpp(IntegerMatrix edge, NumericVector edge_length,
 //' @rdname phangorn-internal
 //' @export
 // [[Rcpp::export]]
-IntegerVector threshStateC(NumericVector x, NumericVector thresholds) {
+IntegerVector threshStateC(IntegerVector x, IntegerVector thresholds) {
   int n = x.size(), m = thresholds.size()-1L, j=0L;
   IntegerVector out(n);
   for (int i = 0; i < n; i++) {
