@@ -46,7 +46,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // countCycle2_cpp
-NumericVector countCycle2_cpp(IntegerMatrix M);
+IntegerVector countCycle2_cpp(IntegerMatrix M);
 RcppExport SEXP _phangorn_countCycle2_cpp(SEXP MSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -57,7 +57,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // out_cpp
-NumericVector out_cpp(NumericVector d, NumericVector r, int n);
+IntegerVector out_cpp(NumericVector d, NumericVector r, int n);
 RcppExport SEXP _phangorn_out_cpp(SEXP dSEXP, SEXP rSEXP, SEXP nSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -70,25 +70,25 @@ BEGIN_RCPP
 END_RCPP
 }
 // getIndex
-std::vector<int> getIndex(NumericVector left, NumericVector right, int n);
+std::vector<int> getIndex(IntegerVector left, IntegerVector right, int n);
 RcppExport SEXP _phangorn_getIndex(SEXP leftSEXP, SEXP rightSEXP, SEXP nSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericVector >::type left(leftSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type right(rightSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type left(leftSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type right(rightSEXP);
     Rcpp::traits::input_parameter< int >::type n(nSEXP);
     rcpp_result_gen = Rcpp::wrap(getIndex(left, right, n));
     return rcpp_result_gen;
 END_RCPP
 }
 // Transfer_Index
-double Transfer_Index(const NumericVector bp, const IntegerMatrix orig, int l);
+double Transfer_Index(const IntegerVector bp, const IntegerMatrix orig, int l);
 RcppExport SEXP _phangorn_Transfer_Index(SEXP bpSEXP, SEXP origSEXP, SEXP lSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const NumericVector >::type bp(bpSEXP);
+    Rcpp::traits::input_parameter< const IntegerVector >::type bp(bpSEXP);
     Rcpp::traits::input_parameter< const IntegerMatrix >::type orig(origSEXP);
     Rcpp::traits::input_parameter< int >::type l(lSEXP);
     rcpp_result_gen = Rcpp::wrap(Transfer_Index(bp, orig, l));
@@ -154,7 +154,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // p2dna
-NumericVector p2dna(NumericMatrix xx, double eps);
+IntegerVector p2dna(NumericMatrix xx, double eps);
 RcppExport SEXP _phangorn_p2dna(SEXP xxSEXP, SEXP epsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -166,13 +166,13 @@ BEGIN_RCPP
 END_RCPP
 }
 // node_height_cpp
-NumericVector node_height_cpp(NumericVector edge1, NumericVector edge2, NumericVector edge_length);
+NumericVector node_height_cpp(IntegerVector edge1, IntegerVector edge2, NumericVector edge_length);
 RcppExport SEXP _phangorn_node_height_cpp(SEXP edge1SEXP, SEXP edge2SEXP, SEXP edge_lengthSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericVector >::type edge1(edge1SEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type edge2(edge2SEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type edge1(edge1SEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type edge2(edge2SEXP);
     Rcpp::traits::input_parameter< NumericVector >::type edge_length(edge_lengthSEXP);
     rcpp_result_gen = Rcpp::wrap(node_height_cpp(edge1, edge2, edge_length));
     return rcpp_result_gen;
@@ -193,7 +193,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // threshStateC
-NumericVector threshStateC(NumericVector x, NumericVector thresholds);
+IntegerVector threshStateC(NumericVector x, NumericVector thresholds);
 RcppExport SEXP _phangorn_threshStateC(SEXP xSEXP, SEXP thresholdsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;

@@ -91,7 +91,7 @@ public:
 //  int getnBits(void){ return nBits; }
 
   std::vector< std::vector<uint64_t> > X;
-  NumericVector pscore_nodes;
+  IntegerVector pscore_nodes;
   NumericVector weight; // Integer??
   int nChar;
   int nSeq;
