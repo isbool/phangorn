@@ -95,7 +95,8 @@ IntegerVector countCycle2_cpp(IntegerMatrix M){
     tmp = 0L;
     if(M[i] != M[i + (m -1) * l])tmp=1L;
     for (int j=1; j<m; j++) {
-      if(M[i + (j-1L)* l] != M[i + j * l])tmp++;
+      // if(M[i + (j-1L)* l] != M[i + j * l])tmp++;
+      if(M[static_cast<R_xlen_t>(i + (j-1L) * l)] != M[static_cast<R_xlen_t>(i + j * l)]) tmp++; // fix
     }
     res[i]=tmp;
   }
@@ -393,7 +394,8 @@ void copheneticHelpCpp(std::vector<int> left, std::vector<int> right, int h, Num
     for(std::size_t i=0; i<left.size(); i++){
         for(std::size_t j=0; j<right.size(); j++){
             ind = give_index3(left[i], right[j], nTips);
-            dm[ind] = 2.0*nh[h] - nh[left[i]-1L] - nh[right[j]-1L];
+            // dm[ind] = 2.0*nh[h] - nh[left[i]-1L] - nh[right[j]-1L];
+            dm[ind] = 2.0*nh[h] - nh[static_cast<R_xlen_t>(left[i]-1L)] - nh[static_cast<R_xlen_t>(right[j]-1L)]; // fix
         }
     }
 }

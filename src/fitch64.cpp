@@ -884,8 +884,10 @@ double pscore(Fitch *obj, const IntegerMatrix &orig)
       child2 += states;
       parent += states;
       tmp = ~orvand & ones;
-      for(int l=0; l<BIT_SIZE; ++l){
-        if((tmp >> l) & 1ull) pars+= obj->weight[i*BIT_SIZE + l];  // problem
+      for (int l = 0; l < BIT_SIZE; ++l)
+      {
+        if ((tmp >> l) & 1ull)
+          pars += obj->weight[i * BIT_SIZE + l];
       }
     }
     for (int i = obj->wBits; i < nBits; ++i)
@@ -997,7 +999,10 @@ NumericVector pscore_node(Fitch *obj, const IntegerMatrix &orig)
       for (int l = 0; l < BIT_SIZE; ++l)
       {
         if ((tmp >> l) & 1ull)
-          pars[anc[k] - 1L] += obj->weight[i * BIT_SIZE + l];
+        {
+          // pars[anc[k] - 1L] += obj->weight[i * BIT_SIZE + l];
+          pars[static_cast<R_xlen_t>(anc[k] - 1)] += obj->weight[i * BIT_SIZE + l];
+        }
       }
     }
     for (int i = obj->wBits; i < nBits; ++i)
@@ -1013,8 +1018,8 @@ NumericVector pscore_node(Fitch *obj, const IntegerMatrix &orig)
       child2 += states;
       parent += states;
       tmp = ~orvand & ones;
-      // pars[anc[k] - 1L] += popcnt64(tmp); // problem
-      pars[static_cast<R_xlen_t>(anc[k] - 1)] += popcnt64(tmp); // fixed
+      // pars[anc[k] - 1L] += popcnt64(tmp);
+      pars[static_cast<R_xlen_t>(anc[k] - 1)] += popcnt64(tmp); // fix
     }
   }
   if (unrooted)
@@ -1038,7 +1043,10 @@ NumericVector pscore_node(Fitch *obj, const IntegerMatrix &orig)
       for (int l = 0; l < BIT_SIZE; ++l)
       {
         if ((tmp >> l) & 1ull)
-          pars[anc[nl] - 1L] += obj->weight[i * BIT_SIZE + l];
+        {
+          // pars[anc[nl] - 1L] += obj->weight[i * BIT_SIZE + l];
+          pars[static_cast<R_xlen_t>(anc[nl] - 1)] += obj->weight[i * BIT_SIZE + l]; // fix
+        }
       }
     }
     for (int i = obj->wBits; i < nBits; ++i)
@@ -1055,7 +1063,8 @@ NumericVector pscore_node(Fitch *obj, const IntegerMatrix &orig)
       child1 += states;
       parent += states;
       uint64_t tmp = ~orvand & ones;
-      pars[anc[nl] - 1L] += popcnt64(tmp);
+      // pars[anc[nl] - 1L] += popcnt64(tmp);
+      pars[static_cast<R_xlen_t>(anc[nl] - 1)] += popcnt64(tmp); // fix
     }
   }
   return (pars);
