@@ -13,7 +13,7 @@ int give_index3(int i, int j, int n)
 
 
 // [[Rcpp::export]]
-IntegerVector fhm_new(IntegerVector v, int n){
+NumericVector fhm_new(NumericVector v, int n){
   unsigned int l, i, j;
   unsigned int start, step, num_splits;
   unsigned int max_n = (unsigned int)n;
@@ -46,8 +46,8 @@ IntegerVector fhm_new(IntegerVector v, int n){
 // export: Descendants(x, 1:max(x$edge), "all")
 // [[Rcpp::export]]
 List allDescCPP(IntegerMatrix orig, int nTips) {
-    IntegerVector parent = orig( _, 0);
-    IntegerVector children = orig( _, 1);
+    NumericVector parent = orig( _, 0);
+    NumericVector children = orig( _, 1);
     int m = max(parent);
     // create list for results
     std::vector< std::vector<int> > out(m) ;
@@ -86,11 +86,11 @@ int countCycle_cpp(IntegerMatrix M){
 }
 
 // [[Rcpp::export]]
-IntegerVector countCycle2_cpp(IntegerMatrix M){
+NumericVector countCycle2_cpp(IntegerMatrix M){
   int tmp;
   int l = M.nrow();
   int m = M.ncol();
-  IntegerVector res(l);
+  NumericVector res(l);
   for (int i=0; i<l; i++) {
     tmp = 0L;
     if(M[i] != M[i + (m -1) * l])tmp=1L;
@@ -106,12 +106,12 @@ IntegerVector countCycle2_cpp(IntegerMatrix M){
 
 // speed up some code for NJ
 // [[Rcpp::export]]
-IntegerVector out_cpp(IntegerVector d, IntegerVector r, int n){
+NumericVector out_cpp(NumericVector d, NumericVector r, int n){
   int i, j; //, k, l;
   double res, tmp;
 //  k=1;
 //  l=2;
-  IntegerVector xx = IntegerVector::create(1, 2);
+  NumericVector xx = NumericVector::create(1, 2);
   res = d[1] - r[0] - r[1];
   for(i = 0; i < (n-1); i++){
     for(j = i+1; j < n; j++){
@@ -129,7 +129,7 @@ IntegerVector out_cpp(IntegerVector d, IntegerVector r, int n){
 
 
 // [[Rcpp::export]]
-std::vector<int> getIndex(IntegerVector left, IntegerVector right, int n){
+std::vector<int> getIndex(NumericVector left, NumericVector right, int n){
   int k;
   std::vector<int> res;
   for (int i = 0; i < left.size(); i++){
@@ -145,16 +145,16 @@ std::vector<int> getIndex(IntegerVector left, IntegerVector right, int n){
 
 // transfer bootstrap
 // [[Rcpp::export]]
-double Transfer_Index(const IntegerVector bp, const IntegerMatrix orig, int l) {
-  IntegerVector parent = orig( _, 0);
-  IntegerVector children = orig( _, 1);
+double Transfer_Index(const NumericVector bp, const IntegerMatrix orig, int l) {
+  NumericVector parent = orig( _, 0);
+  NumericVector children = orig( _, 1);
   int m = max(parent), tmp, ei, ni;
   int p = bp.size();
   int lmp = l - p;
   int best = p - 1;
   double result;
-  IntegerVector l0(m+1);
-  IntegerVector l1(m+1);
+  NumericVector l0(m+1);
+  NumericVector l1(m+1);
   for(int i = 0; i<l; i++) l0[i] = 1;
   for(int i = 0; i<p; i++){
     l0[bp[i]] = 0;
@@ -188,8 +188,8 @@ double Transfer_Index(const IntegerVector bp, const IntegerMatrix orig, int l) {
 // export: Descendants(x, 1:max(x$edge), "all")
 // [[Rcpp::export]]
 std::vector< std::vector<int> > bipartCPP(IntegerMatrix orig, int nTips) {
-    IntegerVector parent = orig( _, 0);
-    IntegerVector children = orig( _, 1);
+    NumericVector parent = orig( _, 0);
+    NumericVector children = orig( _, 1);
     int m = max(parent), j=0;
     int nnode = m - nTips;
     // create list for results
@@ -253,8 +253,8 @@ std::vector< std::vector<int> > short_bipCPP(IntegerMatrix orig, int nTips) {
 // export: Descendants(x, 1:max(x$edge), "all")
 // [[Rcpp::export]]
 std::vector< std::vector<int> > bipCPP(IntegerMatrix orig, int nTips) {
-    IntegerVector parent = orig( _, 0);
-    IntegerVector children = orig( _, 1);
+    NumericVector parent = orig( _, 0);
+    NumericVector children = orig( _, 1);
     int m = max(parent), j=0;
     // create list for results
     std::vector< std::vector<int> > out(m) ;
@@ -314,8 +314,8 @@ int bip_shared(SEXP tree1, SEXP tree2, int nTips){
 // export: list of children
 // [[Rcpp::export]]
 List allChildrenCPP(const IntegerMatrix orig) {
-    IntegerVector parent = orig( _, 0);
-    IntegerVector children = orig( _, 1);
+    NumericVector parent = orig( _, 0);
+    NumericVector children = orig( _, 1);
     int m = max(parent);
     // create list for results
     std::vector< std::vector<int> > out(m) ;
@@ -329,13 +329,13 @@ List allChildrenCPP(const IntegerMatrix orig) {
 //package_native_routine_registration_skeleton("package-root-directory")
 // [[Rcpp::export]]
 List allSiblingsCPP(const IntegerMatrix & edge) {
-  IntegerVector parent = edge( _, 0);
+  NumericVector parent = edge( _, 0);
   int m = max(parent), l, left, right;
   int root = min(parent);
   List ch = allChildrenCPP(edge);
   std::vector< std::vector<int> > out(m); //max(edge)
   for(int h = root-1L; h<m; h++){
-    IntegerVector tmp_ch = ch[h];
+    NumericVector tmp_ch = ch[h];
     l = tmp_ch.size();
     if(l>0){
       for(int j=0; j<l; j++){
@@ -353,11 +353,11 @@ List allSiblingsCPP(const IntegerMatrix & edge) {
 
 
 // [[Rcpp::export]]
-IntegerVector p2dna(NumericMatrix xx, double eps=0.999){
+NumericVector p2dna(NumericMatrix xx, double eps=0.999){
     int nr = xx.nrow(); //xx.ncol(), nc = 4;
     double m=0.0;
-    IntegerVector tmp = IntegerVector::create(1,2,4,8);
-    IntegerVector res(nr);
+    NumericVector tmp = NumericVector::create(1,2,4,8);
+    NumericVector res(nr);
     for(int i=0; i<nr; ++i){
         m=xx(i,0);
         for(int j=1; j<4; ++j){
@@ -372,10 +372,10 @@ IntegerVector p2dna(NumericMatrix xx, double eps=0.999){
 
 
 // [[Rcpp::export]]
-IntegerVector node_height_cpp(IntegerVector edge1, IntegerVector edge2,
-                              IntegerVector edge_length)
+NumericVector node_height_cpp(NumericVector edge1, NumericVector edge2,
+                              NumericVector edge_length)
 {
-    IntegerVector xx(max(edge2));
+    NumericVector xx(max(edge2));
     for (int i = (edge2.size() - 1); i >= 0; i--)
         xx[edge2[i] - 1] = xx[edge1[i] - 1] + edge_length[i];
     return(max(xx) - xx);
@@ -388,7 +388,7 @@ Fast cophenetic distance
 */
 
 
-void copheneticHelpCpp(std::vector<int> left, std::vector<int> right, int h, IntegerVector nh, int nTips, IntegerVector dm){
+void copheneticHelpCpp(std::vector<int> left, std::vector<int> right, int h, NumericVector nh, int nTips, NumericVector dm){
     int ind;
     for(std::size_t i=0; i<left.size(); i++){
         for(std::size_t j=0; j<right.size(); j++){
@@ -400,18 +400,18 @@ void copheneticHelpCpp(std::vector<int> left, std::vector<int> right, int h, Int
 
 
 // [[Rcpp::export]]
-IntegerVector cophenetic_cpp(IntegerMatrix edge, IntegerVector edge_length,
+NumericVector cophenetic_cpp(IntegerMatrix edge, NumericVector edge_length,
                              int nTips, int nNode){
-    IntegerVector parents = edge( _, 0);
-    IntegerVector children = edge( _, 1);
-    IntegerVector nh = node_height_cpp(parents, children, edge_length);
+    NumericVector parents = edge( _, 0);
+    NumericVector children = edge( _, 1);
+    NumericVector nh = node_height_cpp(parents, children, edge_length);
     List ch = allChildrenCPP(edge);
     std::vector< std::vector<int> > bip = bipCPP(edge, nTips);
-    IntegerVector dm( nTips * (nTips-1) /2 );
+    NumericVector dm( nTips * (nTips-1) /2 );
     int l=0, left, right;
     for(int h=nNode; h<(nNode + nTips); h++){
-        // changed from IntegerVector to IntegerVector
-        IntegerVector tmp_ch = ch[h];
+        // changed from NumericVector to NumericVector
+        NumericVector tmp_ch = ch[h];
         l = tmp_ch.size();
         for(int j=0; j<(l-1L); j++){
             left = tmp_ch[j] - 1;
@@ -429,9 +429,9 @@ IntegerVector cophenetic_cpp(IntegerMatrix edge, IntegerVector edge_length,
 //' @rdname phangorn-internal
 //' @export
 // [[Rcpp::export]]
-IntegerVector threshStateC(IntegerVector x, IntegerVector thresholds) {
+NumericVector threshStateC(NumericVector x, NumericVector thresholds) {
   int n = x.size(), m = thresholds.size()-1L, j=0L;
-  IntegerVector out(n);
+  NumericVector out(n);
   for (int i = 0; i < n; i++) {
     j=0L;
     while(x[i]>thresholds[j] && j<m ) j++;

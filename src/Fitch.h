@@ -85,14 +85,14 @@ public:
   }
 
 //  int getNR(void){ return nChar; }
-//  IntegerVector getWeight(void){ return weight; }
+//  NumericVector getWeight(void){ return weight; }
 //  int getP0(void){ return p0; }
 //  int getnSeq(void){ return nSeq; }
 //  int getnBits(void){ return nBits; }
 
   std::vector< std::vector<uint64_t> > X;
-  IntegerVector pscore_nodes;
-  IntegerVector weight; // Integer??
+  NumericVector pscore_nodes;
+  NumericVector weight; // Integer??
   int nChar;
   int nSeq;
   int nStates;

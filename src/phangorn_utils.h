@@ -14,18 +14,18 @@ List allChildrenCPP(const IntegerMatrix orig);
 
 List allSiblingsCPP(const IntegerMatrix & edge);
 
-IntegerVector p2dna(NumericMatrix xx, double eps=0.999);
+NumericVector p2dna(NumericMatrix xx, double eps=0.999);
 
-IntegerVector node_height_cpp(IntegerVector edge1, IntegerVector edge2,
-                              IntegerVector edge_length);
+NumericVector node_height_cpp(NumericVector edge1, NumericVector edge2,
+                              NumericVector edge_length);
 
-IntegerVector cophenetic_cpp(IntegerMatrix edge, IntegerVector edge_length,
+NumericVector cophenetic_cpp(IntegerMatrix edge, NumericVector edge_length,
                              int nTips, int nNode);
 
-IntegerVector threshStateC(IntegerVector x, IntegerVector thresholds);
+NumericVector threshStateC(NumericVector x, NumericVector thresholds);
 
 int countCycle_cpp(IntegerMatrix M);
 
-std::vector<int> getIndex(IntegerVector left, IntegerVector right, int n);
+std::vector<int> getIndex(NumericVector left, NumericVector right, int n);
 
 #endif
